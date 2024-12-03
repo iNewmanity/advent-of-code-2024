@@ -33,7 +33,30 @@ func countSafeRecords(data [][]int) int {
 }
 
 func withProblemDampenerSuccess(numArray []int) bool {
+	for i := range numArray {
+		subarray := arrayWithoutIndex(numArray, i)
+
+		var isMonotoneDescending bool = isMonotoneDescending(subarray)
+		var isMonotoneAscending bool = isMonotoneAscending(subarray)
+		var isAppropriateDistance bool = hasAppropriateDistance(subarray)
+
+		if (isMonotoneAscending || isMonotoneDescending) && isAppropriateDistance {
+			return true
+		}
+
+	}
 	return false
+}
+
+func arrayWithoutIndex(numArray []int, index int) []int {
+	var arrayWithoutIndex []int
+	for i := range numArray {
+		if i == index {
+			continue
+		}
+		arrayWithoutIndex = append(arrayWithoutIndex, numArray[i])
+	}
+	return arrayWithoutIndex
 }
 
 func hasTooMuchDistance() {
