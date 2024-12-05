@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 	"strings"
 )
 
@@ -21,7 +20,79 @@ func main() {
 }
 
 func secondAssignment(data [][]string) int {
+	var count int = searchForAs(data)
+	return count
+}
 
+func searchForAs(data [][]string) int {
+	count := 0
+	for i := range data {
+		if i == 0 {
+			continue
+		} else if i == len(data)-1 {
+			continue
+		} else {
+			for i2 := range data[i] {
+				if i2 == 0 {
+					continue
+				} else if i2 == len(data[i])-1 {
+					continue
+				} else {
+					if isA(data[i][i2]) {
+						if checkSurroundingsforPattern(data, []int{i, i2}) {
+							count++
+						} else {
+
+						}
+					}
+				}
+			}
+		}
+	}
+	return count
+}
+
+func checkSurroundingsforPattern(data [][]string, coordinate []int) bool {
+	var upL, downR, upR, downL = calculateCoordinatesToCheck(coordinate)
+	if data[upL[0]][upL[1]] == "M" && data[upR[0]][upR[1]] == "M" {
+		if data[downR[0]][downR[1]] == "S" && data[downL[0]][downL[1]] == "S" {
+			return true
+		}
+	} else if data[upL[0]][upL[1]] == "S" && data[upR[0]][upR[1]] == "S" {
+		if data[downR[0]][downR[1]] == "M" && data[downL[0]][downL[1]] == "M" {
+			return true
+		}
+	} else if data[upL[0]][upL[1]] == "M" && data[upR[0]][upR[1]] == "S" {
+		if data[downL[0]][downL[1]] == "M" && data[downR[0]][downR[1]] == "S" {
+			return true
+		}
+	} else if data[upL[0]][upL[1]] == "S" && data[upR[0]][upR[1]] == "M" {
+		if data[downL[0]][downL[1]] == "S" && data[downR[0]][downR[1]] == "M" {
+			return true
+		}
+	} else {
+		return false
+	}
+	return false
+}
+
+func calculateCoordinatesToCheck(coordinates []int) ([]int, []int, []int, []int) {
+	var upL = []int{coordinates[0] - 1, coordinates[1] - 1}
+	var downL = []int{coordinates[0] + 1, coordinates[1] - 1}
+	var upR = []int{coordinates[0] - 1, coordinates[1] + 1}
+	var downR = []int{coordinates[0] + 1, coordinates[1] + 1}
+	fmt.Println(upL, upR)
+	fmt.Println(coordinates)
+	fmt.Println(downL, downR)
+	return upL, downR, upR, downL
+}
+
+func isA(text string) bool {
+	if text == "A" {
+		return true
+	} else {
+		return false
+	}
 }
 
 func firstAssignment(data [][]string) int {
