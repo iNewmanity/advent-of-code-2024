@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -13,18 +14,24 @@ func main() {
 	var data [][]string = read_file(filename)
 
 	var result int = firstAssignment(data)
-	fmt.Println(result)
+	fmt.Println("First Assignment: ", result)
+	var result2 int = secondAssignment(data)
+	fmt.Println("Second Assignment: ", result2)
+
+}
+
+func secondAssignment(data [][]string) int {
+
 }
 
 func firstAssignment(data [][]string) int {
 	var linearAndExtendedDataStructure [][]string = createAlternativeDataStructure(data)
 
-	var count int = countXMASAppearing(linearAndExtendedDataStructure)
-	fmt.Println(count)
+	var count int = countXMASAppearing(linearAndExtendedDataStructure, "xmas")
 	return count
 }
 
-func countXMASAppearing(altStructure [][]string) int {
+func countXMASAppearing(altStructure [][]string, match string) int {
 	count := 0
 
 	for _, row := range altStructure {
@@ -34,12 +41,11 @@ func countXMASAppearing(altStructure [][]string) int {
 			continue
 		}
 
-		var stringsInRow int = strings.Count(strings.ToLower(rowString), "xmas")
+		var stringsInRow int = strings.Count(strings.ToLower(rowString), match)
 
 		// Count occurrences of "xmas" in the string (case insensitive)
 		count += stringsInRow
 
-		fmt.Println(rowString, stringsInRow)
 	}
 
 	return count
