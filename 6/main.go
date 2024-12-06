@@ -7,8 +7,8 @@ import (
 )
 
 func main() {
-	assignment1()
-	assignment2()
+	var value [][]string = assignment1()
+	assignment2(value)
 }
 
 func getTransitions() map[day6.State]day6.State {
@@ -46,12 +46,10 @@ func printStuff(values [][]string) {
 	fmt.Println("----------------------------------")
 }
 
-func assignment2() {
-	path := "/home/janneumann/Dokumente/Daten/Projekte/Privat/advent-of-code-2024/6/input.txt"
-	values := util.ReadFile(path, "")
+func assignment2(values [][]string) {
 
 	stateMachine, coordinate := getStartingStuff(values)
-	values[coordinate.Y][coordinate.X] = "|"
+	values[coordinate.Y][coordinate.X] = "0"
 	min := 0
 	max := len(values[0]) - 1
 
@@ -82,7 +80,7 @@ func assignment2() {
 				continue
 			}
 
-			values[coordinate.Y][coordinate.X] = "|"
+			values[coordinate.Y][coordinate.X] = "0"
 			coordinate.Y = coordinate.Y - 1
 
 			continue
@@ -107,7 +105,7 @@ func assignment2() {
 				continue
 			}
 
-			values[coordinate.Y][coordinate.X] = "-"
+			values[coordinate.Y][coordinate.X] = "0"
 			coordinate.X = coordinate.X + 1
 
 			continue
@@ -132,7 +130,7 @@ func assignment2() {
 				continue
 			}
 
-			values[coordinate.Y][coordinate.X] = "|"
+			values[coordinate.Y][coordinate.X] = "0"
 			coordinate.Y = coordinate.Y + 1
 
 			continue
@@ -158,31 +156,17 @@ func assignment2() {
 				continue
 			}
 
-			values[coordinate.Y][coordinate.X] = "-"
+			values[coordinate.Y][coordinate.X] = "0"
 			coordinate.X = coordinate.X - 1
 
 			continue
 		}
 	}
 
-	values[coordinate.Y][coordinate.X] = "-"
-
-	count := 0
-	for j := range values {
-		line := values[j]
-		for i := range line {
-			character := line[i]
-			if character == "X" {
-				count++
-			}
-		}
-
-	}
-
-	fmt.Println(count)
+	values[coordinate.Y][coordinate.X] = "0"
 }
 
-func assignment1() {
+func assignment1() [][]string {
 	path := "/home/janneumann/Dokumente/Daten/Projekte/Privat/advent-of-code-2024/6/input.txt"
 	values := util.ReadFile(path, "")
 
@@ -283,5 +267,6 @@ func assignment1() {
 
 	}
 
-	fmt.Println(count)
+	fmt.Println("Assignment 1: ", count)
+	return values
 }
