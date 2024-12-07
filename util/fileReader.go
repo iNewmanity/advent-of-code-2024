@@ -8,25 +8,30 @@ import (
 )
 
 // Reading in files
-func ReadFile(filePath string, delimiter string) [][]string {
+func ReadFile(filePath string, delimiter string, useDelimiter bool) ([][]string, []string) {
 	file, err := os.Open(filePath)
 	if err != nil {
 		log.Fatal("Error opening file: ", err)
-		return nil
+		return nil, nil
 	}
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
 	var data [][]string
+	var altdata []string
 	for scanner.Scan() {
-		var stringArray []string = splitUpLine(scanner.Text(), delimiter)
-		data = append(data, stringArray)
+		if useDelimiter {
+			var stringArray []string = splitUpLine(scanner.Text(), delimiter)
+			data = append(data, stringArray)
+		}
+		altdata = append(altdata, scanner.Text())
+
 	}
 
 	if err := scanner.Err(); err != nil {
 		log.Fatal("Error reading file", err)
 	}
-	return data
+	return data, altdata
 }
 
 func splitUpLine(s string, delimiter string) []string {
