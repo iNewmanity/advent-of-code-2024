@@ -1,6 +1,7 @@
 package day07
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -38,6 +39,50 @@ type operatorEvaluatorTestData struct {
 type totalCalibrationResultTestData struct {
 	input []string
 	want  int
+}
+
+type getPermutationsTestData struct {
+	count      int
+	allowedOps []operator
+	want       [][]operator
+}
+
+type concatenateNumbersTestData struct {
+	num1 int
+	num2 int
+	want int
+}
+
+func TestEvaluateCombination(t *testing.T) {
+
+}
+
+func TestConcatenateNumbers(t *testing.T) {
+	tests := []concatenateNumbersTestData{
+		concatenateNumbersTestData{num1: 24, num2: 42, want: 2442},
+		concatenateNumbersTestData{num1: 242424, num2: 42, want: 24242442},
+		concatenateNumbersTestData{num1: 36, num2: 42, want: 3642},
+		concatenateNumbersTestData{num1: 312132, num2: 42, want: 31213242},
+	}
+	for _, test := range tests {
+		got := concatenateNumbers(test.num1, test.num2)
+		if got != test.want {
+			t.Errorf("got %d, want %d", got, test.want)
+		}
+	}
+}
+
+func TestGetPermutationOperators(t *testing.T) {
+	tests := []getPermutationsTestData{
+		getPermutationsTestData{count: 1, allowedOps: []operator{"+", "*", "||"}, want: [][]operator{{"+"}, {"*"}, {"||"}}},
+		getPermutationsTestData{count: 2, allowedOps: []operator{"+", "*"}, want: [][]operator{{"+", "+"}, {"*", "+"}, {"+", "*"}, {"*", "*"}}},
+	}
+	for _, test := range tests {
+		got := getPermutationOperators(test.count, test.allowedOps)
+		if !reflect.DeepEqual(got, test.want) {
+			t.Errorf("getPermutationOperators(%v) = %v, want %v", test.count, got, test.want)
+		}
+	}
 }
 
 func TestGetTotalCalibrationResult(t *testing.T) {

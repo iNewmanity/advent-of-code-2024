@@ -1,6 +1,7 @@
 package day07
 
 import (
+	"fmt"
 	"slices"
 	"strconv"
 	"strings"
@@ -26,14 +27,14 @@ func GetTotalCalibrationResult(input []string) int {
 }
 
 func operatorEvaluator(assignment Assignment) bool {
-	return evaluateCombination(assignment)
+	return evaluateCombination(assignment, []operator{"*", "+", "||"})
 }
 
 func evaluateCombination(assignment Assignment, allowedOperators []operator) bool {
 	targetNumber := assignment.result
 	values := assignment.numbers
 
-	operatorList := getPermutationOperators(len(values)-1, []operator{"*", "+"})
+	operatorList := getPermutationOperators(len(values)-1, allowedOperators)
 
 	for i := 0; i < len(operatorList); i++ {
 		result := values[0]
@@ -46,6 +47,9 @@ func evaluateCombination(assignment Assignment, allowedOperators []operator) boo
 			if operators[j-1] == "+" {
 				result += values[j]
 			}
+			if operators[j-1] == "||" {
+				result = concatenateNumbers(result, values[j])
+			}
 		}
 
 		if result == targetNumber {
@@ -55,6 +59,25 @@ func evaluateCombination(assignment Assignment, allowedOperators []operator) boo
 	}
 
 	return false
+}
+
+func concatenateNumbers(a, b int) int {
+	// Convert integers to strings
+	strA := strconv.Itoa(a)
+	strB := strconv.Itoa(b)
+
+	// Concatenate the strings
+	concatenatedStr := strA + strB
+
+	// Convert the concatenated string back to an integer
+	concatenatedInt, err := strconv.Atoi(concatenatedStr)
+	if err != nil {
+		// Handle error if conversion fails
+		fmt.Println("Error converting concatenated string to int:", err)
+		return 0
+	}
+
+	return concatenatedInt
 }
 
 func getPermutationOperators(count int, ops []operator) [][]operator {
