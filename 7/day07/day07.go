@@ -10,12 +10,12 @@ import (
 type Assignment struct {
 	result    int
 	numbers   []int
-	operators []operator
+	operators []Operator
 }
 
-type operator string
+type Operator string
 
-func GetTotalCalibrationResult(input []string, allowedOperators []operator) int {
+func GetTotalCalibrationResult(input []string, allowedOperators []Operator) int {
 	assignments := assignmentCreator(input)
 	var totalCalibrationResult int
 	for i := range assignments {
@@ -26,11 +26,11 @@ func GetTotalCalibrationResult(input []string, allowedOperators []operator) int 
 	return totalCalibrationResult
 }
 
-func operatorEvaluator(assignment Assignment, allowedOperators []operator) bool {
+func operatorEvaluator(assignment Assignment, allowedOperators []Operator) bool {
 	return evaluateCombination(assignment, allowedOperators)
 }
 
-func evaluateCombination(assignment Assignment, allowedOperators []operator) bool {
+func evaluateCombination(assignment Assignment, allowedOperators []Operator) bool {
 	targetNumber := assignment.result
 	values := assignment.numbers
 
@@ -80,8 +80,8 @@ func concatenateNumbers(a, b int) int {
 	return concatenatedInt
 }
 
-func getPermutationOperators(count int, ops []operator) [][]operator {
-	var result [][]operator
+func getPermutationOperators(count int, ops []Operator) [][]Operator {
+	var result [][]Operator
 
 	totalPermutations := 1
 	for i := 0; i < count; i++ {
@@ -89,7 +89,7 @@ func getPermutationOperators(count int, ops []operator) [][]operator {
 	}
 
 	for i := 0; i < totalPermutations; i++ {
-		permutation := make([]operator, count)
+		permutation := make([]Operator, count)
 		index := i
 		for j := 0; j < count; j++ {
 			permutation[j] = ops[index%len(ops)]
@@ -101,7 +101,7 @@ func getPermutationOperators(count int, ops []operator) [][]operator {
 	return result
 }
 
-func isAllowedOperator(op operator, allowed []operator) bool {
+func isAllowedOperator(op Operator, allowed []Operator) bool {
 	if slices.Contains(allowed, op) {
 		return true
 	}

@@ -26,27 +26,27 @@ type assignmentCreatorTestData struct {
 }
 
 type allowedOperatorTestData struct {
-	input   operator
-	allowed []operator
+	input   Operator
+	allowed []Operator
 	want    bool
 }
 
 type operatorEvaluatorTestData struct {
 	input   Assignment
-	allowed []operator
+	allowed []Operator
 	want    bool
 }
 
 type totalCalibrationResultTestData struct {
 	input   []string
-	allowed []operator
+	allowed []Operator
 	want    int
 }
 
 type getPermutationsTestData struct {
 	count      int
-	allowedOps []operator
-	want       [][]operator
+	allowedOps []Operator
+	want       [][]Operator
 }
 
 type concatenateNumbersTestData struct {
@@ -57,16 +57,16 @@ type concatenateNumbersTestData struct {
 
 type evaluateCombinationsTestData struct {
 	input            Assignment
-	allowedOperators []operator
+	allowedOperators []Operator
 	want             bool
 }
 
 func TestEvaluateCombination(t *testing.T) {
 	tests := []evaluateCombinationsTestData{
-		evaluateCombinationsTestData{input: Assignment{result: 190, numbers: []int{10, 19}}, allowedOperators: []operator{"+", "*"}, want: true},
-		evaluateCombinationsTestData{input: Assignment{result: 156, numbers: []int{15, 6}}, allowedOperators: []operator{"+", "*"}, want: false},
-		evaluateCombinationsTestData{input: Assignment{result: 156, numbers: []int{15, 6}}, allowedOperators: []operator{"+", "*", "||"}, want: true},
-		evaluateCombinationsTestData{input: Assignment{result: 7290, numbers: []int{6, 8, 6, 15}}, allowedOperators: []operator{"+", "*", "||"}, want: true},
+		evaluateCombinationsTestData{input: Assignment{result: 190, numbers: []int{10, 19}}, allowedOperators: []Operator{"+", "*"}, want: true},
+		evaluateCombinationsTestData{input: Assignment{result: 156, numbers: []int{15, 6}}, allowedOperators: []Operator{"+", "*"}, want: false},
+		evaluateCombinationsTestData{input: Assignment{result: 156, numbers: []int{15, 6}}, allowedOperators: []Operator{"+", "*", "||"}, want: true},
+		evaluateCombinationsTestData{input: Assignment{result: 7290, numbers: []int{6, 8, 6, 15}}, allowedOperators: []Operator{"+", "*", "||"}, want: true},
 	}
 	for _, test := range tests {
 		got := evaluateCombination(test.input, test.allowedOperators)
@@ -93,8 +93,8 @@ func TestConcatenateNumbers(t *testing.T) {
 
 func TestGetPermutationOperators(t *testing.T) {
 	tests := []getPermutationsTestData{
-		getPermutationsTestData{count: 1, allowedOps: []operator{"+", "*", "||"}, want: [][]operator{{"+"}, {"*"}, {"||"}}},
-		getPermutationsTestData{count: 2, allowedOps: []operator{"+", "*"}, want: [][]operator{{"+", "+"}, {"*", "+"}, {"+", "*"}, {"*", "*"}}},
+		getPermutationsTestData{count: 1, allowedOps: []Operator{"+", "*", "||"}, want: [][]Operator{{"+"}, {"*"}, {"||"}}},
+		getPermutationsTestData{count: 2, allowedOps: []Operator{"+", "*"}, want: [][]Operator{{"+", "+"}, {"*", "+"}, {"+", "*"}, {"*", "*"}}},
 	}
 	for _, test := range tests {
 		got := getPermutationOperators(test.count, test.allowedOps)
@@ -118,7 +118,7 @@ func TestGetTotalCalibrationResult(t *testing.T) {
 				"21037: 9 7 18 13",
 				"292: 11 6 16 20",
 			},
-			allowed: []operator{
+			allowed: []Operator{
 				"+",
 				"*",
 			},
@@ -136,7 +136,7 @@ func TestGetTotalCalibrationResult(t *testing.T) {
 				"21037: 9 7 18 13",
 				"292: 11 6 16 20",
 			},
-			allowed: []operator{
+			allowed: []Operator{
 				"+",
 				"*",
 				"||",
@@ -154,12 +154,12 @@ func TestGetTotalCalibrationResult(t *testing.T) {
 
 func TestOperatorEvaluator(t *testing.T) {
 	tests := []operatorEvaluatorTestData{
-		operatorEvaluatorTestData{input: Assignment{result: 190, numbers: []int{10, 19}}, allowed: []operator{"+", "*"}, want: true},
-		operatorEvaluatorTestData{input: Assignment{result: 3267, numbers: []int{81, 40, 27}}, allowed: []operator{"+", "*"}, want: true},
-		operatorEvaluatorTestData{input: Assignment{result: 292, numbers: []int{11, 6, 16, 20}}, allowed: []operator{"+", "*"}, want: true},
-		operatorEvaluatorTestData{input: Assignment{result: 83, numbers: []int{17, 5}}, allowed: []operator{"+", "*"}, want: false},
-		operatorEvaluatorTestData{input: Assignment{result: 156, numbers: []int{15, 6}}, allowed: []operator{"+", "*"}, want: false},
-		operatorEvaluatorTestData{input: Assignment{result: 156, numbers: []int{15, 6}}, allowed: []operator{"+", "*", "||"}, want: true},
+		operatorEvaluatorTestData{input: Assignment{result: 190, numbers: []int{10, 19}}, allowed: []Operator{"+", "*"}, want: true},
+		operatorEvaluatorTestData{input: Assignment{result: 3267, numbers: []int{81, 40, 27}}, allowed: []Operator{"+", "*"}, want: true},
+		operatorEvaluatorTestData{input: Assignment{result: 292, numbers: []int{11, 6, 16, 20}}, allowed: []Operator{"+", "*"}, want: true},
+		operatorEvaluatorTestData{input: Assignment{result: 83, numbers: []int{17, 5}}, allowed: []Operator{"+", "*"}, want: false},
+		operatorEvaluatorTestData{input: Assignment{result: 156, numbers: []int{15, 6}}, allowed: []Operator{"+", "*"}, want: false},
+		operatorEvaluatorTestData{input: Assignment{result: 156, numbers: []int{15, 6}}, allowed: []Operator{"+", "*", "||"}, want: true},
 	}
 	for _, test := range tests {
 		got := operatorEvaluator(test.input, test.allowed)
@@ -171,10 +171,10 @@ func TestOperatorEvaluator(t *testing.T) {
 
 func TestAllowedOperators(t *testing.T) {
 	tests := []allowedOperatorTestData{
-		allowedOperatorTestData{input: "+", allowed: []operator{"+", "*"}, want: true},
-		allowedOperatorTestData{input: "-", allowed: []operator{"+", "*"}, want: false},
-		allowedOperatorTestData{input: "*", allowed: []operator{"+", "*"}, want: true},
-		allowedOperatorTestData{input: "/", allowed: []operator{"+", "*"}, want: false},
+		allowedOperatorTestData{input: "+", allowed: []Operator{"+", "*"}, want: true},
+		allowedOperatorTestData{input: "-", allowed: []Operator{"+", "*"}, want: false},
+		allowedOperatorTestData{input: "*", allowed: []Operator{"+", "*"}, want: true},
+		allowedOperatorTestData{input: "/", allowed: []Operator{"+", "*"}, want: false},
 	}
 	for _, test := range tests {
 		got := isAllowedOperator(test.input, test.allowed)
