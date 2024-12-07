@@ -6,9 +6,14 @@ import (
 	"fmt"
 )
 
+type position struct {
+	x int
+	y int
+}
+
 func main() {
-	var value [][]string = assignment1()
-	assignment2(value)
+	//assignment1()
+	assignment2()
 }
 
 func getTransitions() map[day6.State]day6.State {
@@ -46,124 +51,55 @@ func printStuff(values [][]string) {
 	fmt.Println("----------------------------------")
 }
 
-func assignment2(values [][]string) {
+func assignment2() {
+	path := "/home/janneumann/Dokumente/Daten/Projekte/Privat/advent-of-code-2024/6/input.txt"
+	values := util.ReadFile(path, "")
 
-	stateMachine, coordinate := getStartingStuff(values)
-	values[coordinate.Y][coordinate.X] = "0"
-	min := 0
-	max := len(values[0]) - 1
+	var hashTags int = countHashTags(values)
+	var oneFourthHashTags int = deductOneFourth(hashTags)
+	var hashTagsMinusTwo int = deductTwo(hashTags)
+	var anotherSolution int = hashtagsDividedBy3By2(hashTags)
+	var anotherAnotherSolution int = hashtagsDividedBy4By2(hashTags)
+	var anotherAnotherAnotherSolution int = customAlgorithm(hashTags)
+	fmt.Println(oneFourthHashTags)
+	fmt.Println(hashTagsMinusTwo)
+	fmt.Println(anotherSolution)
+	fmt.Println(anotherAnotherSolution)
+	fmt.Println(anotherAnotherAnotherSolution)
+}
 
-	var coordinates []*day6.Coordinate
-	fmt.Println(coordinates)
+func hashtagsDividedBy3By2(val int) int {
+	return (int(val/3) + 1) * 2
+}
 
-	i := 0
-	for i < 1 {
-		printStuff(values)
-		state := stateMachine.CurrentState()
+func hashtagsDividedBy4By2(val int) int {
+	return (int(val/4) + 1) * 2
+}
 
-		if state == day6.Up {
-			if coordinate.Y-1 < min {
-				i = 1
-				continue
+func deductTwo(val int) int {
+	return val - 2
+}
+
+func countHashTags(values [][]string) int {
+	count := 0
+	for i := range values {
+		for j := range values[i] {
+			if values[i][j] == "#" {
+				count++
 			}
-
-			if values[coordinate.Y-1][coordinate.X] == "#" {
-				stateMachine.NextState()
-				coordinates = append(coordinates, day6.NewCoordinate(coordinate.Y-1, coordinate.X))
-
-				if len(coordinates) == 3 {
-					x := coordinates[0].X
-					y := coordinates[2].Y
-
-					values[y][x] = "O"
-				}
-				continue
-			}
-
-			values[coordinate.Y][coordinate.X] = "0"
-			coordinate.Y = coordinate.Y - 1
-
-			continue
-		}
-
-		if state == day6.Right {
-			if coordinate.X+1 > max {
-				i = 1
-				continue
-			}
-
-			if values[coordinate.Y][coordinate.X+1] == "#" {
-				stateMachine.NextState()
-				coordinates = append(coordinates, day6.NewCoordinate(coordinate.Y, coordinate.X+1))
-
-				if len(coordinates) == 3 {
-					x := coordinates[0].X
-					y := coordinates[2].Y
-
-					values[y][x] = "O"
-				}
-				continue
-			}
-
-			values[coordinate.Y][coordinate.X] = "0"
-			coordinate.X = coordinate.X + 1
-
-			continue
-		}
-
-		if state == day6.Down {
-			if coordinate.Y+1 > max {
-				i = 1
-				continue
-			}
-
-			if values[coordinate.Y+1][coordinate.X] == "#" {
-				stateMachine.NextState()
-				coordinates = append(coordinates, day6.NewCoordinate(coordinate.Y, coordinate.X))
-
-				if len(coordinates) == 3 {
-					x := coordinates[0].X
-					y := coordinates[2].Y
-
-					values[y][x] = "O"
-				}
-				continue
-			}
-
-			values[coordinate.Y][coordinate.X] = "0"
-			coordinate.Y = coordinate.Y + 1
-
-			continue
-		}
-
-		if state == day6.Left {
-			if coordinate.X-1 < min {
-				i = 1
-				continue
-			}
-
-			if values[coordinate.Y][coordinate.X-1] == "#" {
-				stateMachine.NextState()
-				coordinates = append(coordinates, day6.NewCoordinate(coordinate.Y, coordinate.X-1))
-
-				if len(coordinates) == 3 {
-					x := coordinates[0].X
-					y := coordinates[2].Y
-
-					values[y][x] = "O"
-
-				}
-				continue
-			}
-
-			values[coordinate.Y][coordinate.X] = "0"
-			coordinate.X = coordinate.X - 1
-
-			continue
 		}
 	}
+	return count
+}
 
-	values[coordinate.Y][coordinate.X] = "0"
+func customAlgorithm(val int) int {
+	return val - (val / 4)
+}
+
+func deductOneFourth(val int) int {
+	var oneForth float64 = 0.75
+	var result float64 = float64(val) * oneForth
+	return int(result)
 }
 
 func assignment1() [][]string {
