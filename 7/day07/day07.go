@@ -15,19 +15,19 @@ type Assignment struct {
 
 type operator string
 
-func GetTotalCalibrationResult(input []string) int {
+func GetTotalCalibrationResult(input []string, allowedOperators []operator) int {
 	assignments := assignmentCreator(input)
 	var totalCalibrationResult int
 	for i := range assignments {
-		if operatorEvaluator(assignments[i]) {
+		if operatorEvaluator(assignments[i], allowedOperators) {
 			totalCalibrationResult += assignments[i].result
 		}
 	}
 	return totalCalibrationResult
 }
 
-func operatorEvaluator(assignment Assignment) bool {
-	return evaluateCombination(assignment, []operator{"*", "+", "||"})
+func operatorEvaluator(assignment Assignment, allowedOperators []operator) bool {
+	return evaluateCombination(assignment, allowedOperators)
 }
 
 func evaluateCombination(assignment Assignment, allowedOperators []operator) bool {

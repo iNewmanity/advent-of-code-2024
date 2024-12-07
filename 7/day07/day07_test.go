@@ -32,13 +32,15 @@ type allowedOperatorTestData struct {
 }
 
 type operatorEvaluatorTestData struct {
-	input Assignment
-	want  bool
+	input   Assignment
+	allowed []operator
+	want    bool
 }
 
 type totalCalibrationResultTestData struct {
-	input []string
-	want  int
+	input   []string
+	allowed []operator
+	want    int
 }
 
 type getPermutationsTestData struct {
@@ -53,8 +55,25 @@ type concatenateNumbersTestData struct {
 	want int
 }
 
-func TestEvaluateCombination(t *testing.T) {
+type evaluateCombinationsTestData struct {
+	input            Assignment
+	allowedOperators []operator
+	want             bool
+}
 
+func TestEvaluateCombination(t *testing.T) {
+	tests := []evaluateCombinationsTestData{
+		evaluateCombinationsTestData{input: Assignment{result: 190, numbers: []int{10, 19}}, allowedOperators: []operator{"+", "*"}, want: true},
+		evaluateCombinationsTestData{input: Assignment{result: 156, numbers: []int{15, 6}}, allowedOperators: []operator{"+", "*"}, want: false},
+		evaluateCombinationsTestData{input: Assignment{result: 156, numbers: []int{15, 6}}, allowedOperators: []operator{"+", "*", "||"}, want: true},
+		evaluateCombinationsTestData{input: Assignment{result: 7290, numbers: []int{6, 8, 6, 15}}, allowedOperators: []operator{"+", "*", "||"}, want: true},
+	}
+	for _, test := range tests {
+		got := evaluateCombination(test.input, test.allowedOperators)
+		if got != test.want {
+			t.Errorf("got %v, want %v", got, test.want)
+		}
+	}
 }
 
 func TestConcatenateNumbers(t *testing.T) {
@@ -99,11 +118,34 @@ func TestGetTotalCalibrationResult(t *testing.T) {
 				"21037: 9 7 18 13",
 				"292: 11 6 16 20",
 			},
+			allowed: []operator{
+				"+",
+				"*",
+			},
 			want: 3749,
+		},
+		totalCalibrationResultTestData{
+			input: []string{
+				"190: 10 19",
+				"3267: 81 40 27",
+				"83: 17 5",
+				"156: 15 6",
+				"7290: 6 8 6 15",
+				"161011: 16 10 13",
+				"192: 17 8 14",
+				"21037: 9 7 18 13",
+				"292: 11 6 16 20",
+			},
+			allowed: []operator{
+				"+",
+				"*",
+				"||",
+			},
+			want: 11387,
 		},
 	}
 	for _, test := range tests {
-		got := GetTotalCalibrationResult(test.input)
+		got := GetTotalCalibrationResult(test.input, test.allowed)
 		if got != test.want {
 			t.Errorf("getTotalCalibrationResult(%q) = %d, want %d", test.input, got, test.want)
 		}
@@ -112,13 +154,15 @@ func TestGetTotalCalibrationResult(t *testing.T) {
 
 func TestOperatorEvaluator(t *testing.T) {
 	tests := []operatorEvaluatorTestData{
-		operatorEvaluatorTestData{input: Assignment{result: 190, numbers: []int{10, 19}}, want: true},
-		operatorEvaluatorTestData{input: Assignment{result: 3267, numbers: []int{81, 40, 27}}, want: true},
-		operatorEvaluatorTestData{input: Assignment{result: 292, numbers: []int{11, 6, 16, 20}}, want: true},
-		operatorEvaluatorTestData{input: Assignment{result: 83, numbers: []int{17, 5}}, want: false},
+		operatorEvaluatorTestData{input: Assignment{result: 190, numbers: []int{10, 19}}, allowed: []operator{"+", "*"}, want: true},
+		operatorEvaluatorTestData{input: Assignment{result: 3267, numbers: []int{81, 40, 27}}, allowed: []operator{"+", "*"}, want: true},
+		operatorEvaluatorTestData{input: Assignment{result: 292, numbers: []int{11, 6, 16, 20}}, allowed: []operator{"+", "*"}, want: true},
+		operatorEvaluatorTestData{input: Assignment{result: 83, numbers: []int{17, 5}}, allowed: []operator{"+", "*"}, want: false},
+		operatorEvaluatorTestData{input: Assignment{result: 156, numbers: []int{15, 6}}, allowed: []operator{"+", "*"}, want: false},
+		operatorEvaluatorTestData{input: Assignment{result: 156, numbers: []int{15, 6}}, allowed: []operator{"+", "*", "||"}, want: true},
 	}
 	for _, test := range tests {
-		got := operatorEvaluator(test.input)
+		got := operatorEvaluator(test.input, test.allowed)
 		if got != test.want {
 			t.Errorf("operatorEvaluator(%v) = %v, want %v", test.input, got, test.want)
 		}
