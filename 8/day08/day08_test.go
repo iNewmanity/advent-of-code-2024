@@ -5,6 +5,57 @@ import (
 	"testing"
 )
 
+type extendDistanceTestData struct {
+	input distance
+	limit int
+	want  []distance
+}
+
+func TestExtendDistance(t *testing.T) {
+	tests := []extendDistanceTestData{
+		extendDistanceTestData{
+			input: distance{
+				c1: coordinate{x: 2, y: 1, letter: "A"},
+				c2: coordinate{x: 1, y: 2, letter: "A"},
+				x:  -1,
+				y:  1,
+			},
+			limit: 3,
+			want: []distance{
+				distance{
+					c1: coordinate{x: 2, y: 1, letter: "A"},
+					c2: coordinate{x: 1, y: 2, letter: "A"},
+					x:  -1,
+					y:  1},
+				distance{
+					c1: coordinate{x: 1, y: 2, letter: "A"},
+					c2: coordinate{x: 0, y: 3, letter: "#"},
+					x:  -1,
+					y:  1,
+				},
+				distance{
+					c1: coordinate{x: 0, y: 3, letter: "#"},
+					c2: coordinate{x: -1, y: 4, letter: "#"},
+					x:  -1,
+					y:  1,
+				},
+				distance{
+					c1: coordinate{x: -1, y: 4, letter: "#"},
+					c2: coordinate{x: -2, y: 5, letter: "#"},
+					x:  -1,
+					y:  1,
+				},
+			},
+		},
+	}
+	for _, test := range tests {
+		got := extendDistance(test.input, test.limit)
+		if !reflect.DeepEqual(got, test.want) {
+			t.Errorf("extendDistance(%v, %v) = %v; \nwant %v", test.input, test.limit, got, test.want)
+		}
+	}
+}
+
 type calculateDistancesTestData struct {
 	input []coordinate
 	want  []distance

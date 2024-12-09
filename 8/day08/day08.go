@@ -1,6 +1,7 @@
 package day08
 
 import (
+	"fmt"
 	_ "io"
 	"slices"
 )
@@ -35,9 +36,53 @@ func Day082(data [][]string) int {
 	coordinates := getCoordinates(data)
 	letters := getLetters(coordinates)
 	filteredCoordinates := filterCoordinates(coordinates, letters)
+	antennaAntinode := coordinatesAsAntinodes(filteredCoordinates, letters)
+	fmt.Println(len(antennaAntinode))
 	distances := calculateDistances(filteredCoordinates)
+	distances = extendDistances(distances, 100000)
 	antinodes := createAntinodes(distances, height, width)
+	antinodes = append(antinodes, antennaAntinode...)
+	correctAntinode := []coordinate{}
+	for i := range antinodes {
+		if isAntinodeCorrect(antinodes[i], antinodes, height, width) {
+			correctAntinode = append(correctAntinode, antinodes[i])
+		}
+	}
 	return countAntinodes(antinodes)
+}
+
+func coordinatesAsAntinodes(coordinates []coordinate, letters []string) []coordinate {
+	var antinodes []coordinate
+	for i := range letters {
+		extrudedCoordinates := extrudeLetter(coordinates, letters[i])
+		if len(extrudedCoordinates) > 0 {
+			for i2 := range extrudedCoordinates {
+				coordinate := extrudedCoordinates[i2]
+				coordinate.letter = "#"
+				antinodes = append(antinodes, coordinate)
+			}
+		}
+	}
+	return antinodes
+}
+
+func extendDistances(distances []distance, limit int) []distance {
+	var extendedDistances []distance
+	for i := range distances {
+		extendedDistances = append(extendedDistances, extendDistance(distances[i], limit)...)
+	}
+	return extendedDistances
+}
+
+func extendDistance(dist distance, limit int) []distance {
+	var extendedDistances []distance
+	extendedDistances = append(extendedDistances, dist)
+	for i := 0; i < limit; i++ {
+		antinode := createAntinode(extendedDistances[i])
+		newDist := calculateDistance(extendedDistances[i].c2, antinode)
+		extendedDistances = append(extendedDistances, newDist)
+	}
+	return extendedDistances
 }
 
 func calculateDistances(coordinates []coordinate) []distance {

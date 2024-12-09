@@ -11,8 +11,10 @@ func main() {
 	data, _ := util.ReadFile(path, "", true)
 	result1 := assignment1(data)
 	fmt.Println("Assignment 1: ", result1)
-	result2 := assignment2(data)
+	result2 := uniqueLocationsInBounds()
 	fmt.Println("Assignment 2: ", result2)
+	result3 := assignment2(data)
+	fmt.Println("Assignment 2: ", result3)
 }
 
 func assignment1(data [][]string) int {
