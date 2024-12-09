@@ -6,10 +6,8 @@ import (
 )
 
 type calculateDistancesTestData struct {
-	input     []coordinate
-	unlimited bool
-	runs      int
-	want      []distance
+	input []coordinate
+	want  []distance
 }
 
 func TestCalculateDistances(t *testing.T) {
@@ -21,8 +19,6 @@ func TestCalculateDistances(t *testing.T) {
 				coordinate{x: 3, y: 1, letter: "b"},
 				coordinate{x: 2, y: 2, letter: "b"},
 			},
-			unlimited: false,
-			runs:      5,
 			want: []distance{
 				distance{
 					c1: coordinate{x: 2, y: 1, letter: "A"},
@@ -52,7 +48,7 @@ func TestCalculateDistances(t *testing.T) {
 		},
 	}
 	for _, test := range tests {
-		got := calculateDistances(test.input, test.unlimited, test.runs)
+		got := calculateDistances(test.input)
 		if !reflect.DeepEqual(got, test.want) {
 			t.Errorf("calculateDistances(%v) = %v; want %v", test.input, got, test.want)
 		}
@@ -60,10 +56,8 @@ func TestCalculateDistances(t *testing.T) {
 }
 
 type calculateDistancesForLetterTestData struct {
-	input     []coordinate
-	unlimited bool
-	runs      int
-	want      []distance
+	input []coordinate
+	want  []distance
 }
 
 func TestCalculateDistancesForLetter(t *testing.T) {
@@ -73,8 +67,6 @@ func TestCalculateDistancesForLetter(t *testing.T) {
 				coordinate{x: 2, y: 1, letter: "A"},
 				coordinate{x: 1, y: 2, letter: "A"},
 			},
-			unlimited: false,
-			runs:      5,
 			want: []distance{
 				distance{
 					c1: coordinate{x: 2, y: 1, letter: "A"},
@@ -92,7 +84,7 @@ func TestCalculateDistancesForLetter(t *testing.T) {
 		},
 	}
 	for _, test := range tests {
-		got := calculateDistancesForLetter(test.input, test.unlimited, test.runs)
+		got := calculateDistancesForLetter(test.input)
 		if !reflect.DeepEqual(got, test.want) {
 			t.Errorf("calculateDistancesForLetter(%v) = %v; want %v", test.input, got, test.want)
 		}

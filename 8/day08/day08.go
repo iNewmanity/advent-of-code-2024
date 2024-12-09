@@ -24,7 +24,7 @@ func Day081(data [][]string) int {
 	coordinates := getCoordinates(data)
 	letters := getLetters(coordinates)
 	filteredCoordinates := filterCoordinates(coordinates, letters)
-	distances := calculateDistances(filteredCoordinates, false, height*width)
+	distances := calculateDistances(filteredCoordinates)
 	antinodes := createAntinodes(distances, height, width)
 	return countAntinodes(antinodes)
 }
@@ -35,24 +35,24 @@ func Day082(data [][]string) int {
 	coordinates := getCoordinates(data)
 	letters := getLetters(coordinates)
 	filteredCoordinates := filterCoordinates(coordinates, letters)
-	distances := calculateDistances(filteredCoordinates, true, height*width)
+	distances := calculateDistances(filteredCoordinates)
 	antinodes := createAntinodes(distances, height, width)
 	return countAntinodes(antinodes)
 }
 
-func calculateDistances(coordinates []coordinate, unlimited bool, runs int) []distance {
+func calculateDistances(coordinates []coordinate) []distance {
 	var distances []distance
 	letters := getLetters(coordinates)
 	for i := range letters {
 		letterCoordinates := extrudeLetter(coordinates, letters[i])
 		if len(letterCoordinates) > 0 {
-			distances = append(distances, calculateDistancesForLetter(letterCoordinates, unlimited, runs)...)
+			distances = append(distances, calculateDistancesForLetter(letterCoordinates)...)
 		}
 	}
 	return distances
 }
 
-func calculateDistancesForLetter(coordinates []coordinate, unlimited bool, runs int) []distance {
+func calculateDistancesForLetter(coordinates []coordinate) []distance {
 	var distances []distance
 	for i := range coordinates {
 		for i2 := range coordinates {
@@ -61,28 +61,6 @@ func calculateDistancesForLetter(coordinates []coordinate, unlimited bool, runs 
 				distances = append(distances, distance)
 			}
 		}
-	}
-	if unlimited {
-		var unlimitedDistances []distance
-		for i := 0; i < runs; i++ {
-			if i == 0 {
-				for i := range distances {
-					antinode := createAntinode(distances[i])
-					distance := calculateDistance(distances[i].c2, antinode)
-					unlimitedDistances = append(unlimitedDistances, distance)
-				}
-			} else {
-				for i := range unlimitedDistances {
-					antinode := createAntinode(unlimitedDistances[i])
-					distance := calculateDistance(unlimitedDistances[i].c2, antinode)
-					unlimitedDistances = append(unlimitedDistances, distance)
-				}
-			}
-		}
-		for i := range distances {
-			unlimitedDistances = append(unlimitedDistances, distances[i])
-		}
-		return unlimitedDistances
 	}
 
 	return distances
