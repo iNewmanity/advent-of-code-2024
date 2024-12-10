@@ -2,6 +2,7 @@ package day09
 
 import (
 	"fmt"
+	"slices"
 	"strconv"
 )
 
@@ -32,27 +33,18 @@ func SortStorageByFile(sto storage) storage {
 }
 
 func sortFileSystem(d disk) disk {
-	swapInstructions := swaps{}
-	for i := len(d) - 1; i > 0; i-- {
-		if d[i].id != "." {
-			swapPartner := getForwardFreeSpaceForNeededSpace(d, d[i].size)
-			fmt.Println(d[i].id, "sp:", swapPartner)
-			swapInstructions = append(swapInstructions, swap{
-				file: i,
-				free: swapPartner,
-			})
-		}
-	}
+	swapped := []string{}
+	for i := 0; i < len(d); i++ {
+		if d[i].id != "." && !slices.Contains(swapped, d[i].id) {
 
-	for i := range swapInstructions {
-		if swapInstructions[i].free == -1 {
-			if swapInstructions[i].free != getForwardFreeSpaceForNeededSpace(d, filesize(swapInstructions[i].file)) {
-				if swapInstructions[i].free != -1 {
-					d = swapFileWithFreeSpace(d, swapInstructions[i].file, getForwardFreeSpaceForNeededSpace(d, filesize(swapInstructions[i].file)))
+		}
+
+		for i2 := range d {
+			if d[i2].id == "." {
+				if d[i2].size == d[i].size {
+
 				}
 			}
-		} else {
-			d = swapFileWithFreeSpace(d, swapInstructions[i].file, swapInstructions[i].free)
 		}
 	}
 	return d
@@ -101,7 +93,7 @@ func calculateDiskChecksum(d disk) int {
 			id, _ := strconv.Atoi(d[i].id)
 			result := i * id
 			sum += result
-			fmt.Println(i, "*", id, "=", result)
+			fmt.Println(i, "\t*", id, "\t=", result)
 		}
 	}
 	return sum
@@ -199,36 +191,6 @@ func printDisk(d disk) {
 		fmt.Print(d[i].id)
 	}
 	fmt.Println("\n-----------------------------------\n")
-}
-
-func swapFileWithFreeSpace(d disk, i, j int) disk {
-	thefile := d[i]
-	remainingSize := int(d[j].size) - int(d[i].size)
-	if remainingSize == 0 {
-		d[i] = thefile
-		d[i] = d[j]
-		d[j] = thefile
-	} else {
-		d[j].size = filesize(int(d[j].size) - remainingSize)
-		d[i] = d[j]
-		d[j] = thefile
-		d = append(d[:j+1], append([]file{file{
-			id:   ".",
-			size: filesize(remainingSize),
-		}}, d[j+1:]...)...)
-	}
-	return d
-}
-
-func getForwardFreeSpaceForNeededSpace(d disk, size filesize) int {
-	for i := range d {
-		if d[i].id == "." {
-			if d[i].size >= size {
-				return i
-			}
-		}
-	}
-	return -1
 }
 
 func PrintStorage(sto storage) {
