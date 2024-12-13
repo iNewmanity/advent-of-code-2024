@@ -26,15 +26,11 @@ func (s Stone) applyRules() Stones {
 	}
 	if s.hasEvenNumbersOfDigits() {
 		result = s.split()
-		for i := range result {
-			result[i] = result[i].cutLeadingZeros()
-		}
 		return result
 
 	}
 	if !s.hasEvenNumbersOfDigits() && !s.hasValOfZero() {
-		multResult := s.multiplyBy2024()
-		result = append(result, multResult)
+		result = append(result, s.multiplyBy2024())
 	}
 	return result
 }
@@ -47,7 +43,6 @@ func (s Stone) hasEvenNumbersOfDigits() bool {
 }
 
 func (s Stone) hasValOfZero() bool {
-	s = s.cutLeadingZeros()
 	if s.toInt() == 0 {
 		return true
 	}
@@ -81,12 +76,19 @@ func (s Stone) split() Stones {
 	length := len(s)
 	mid := length / 2
 
-	// Split into two parts
+	result := Stones{}
+
+	// Use references instead of creating new slices to minimize memory usage
 	firstPart := s[:mid]
 	secondPart := s[mid:]
 
-	result := Stones{}
-	result = append(result, firstPart)
-	result = append(result, secondPart)
+	// Directly append the result of cutLeadingZeros to avoid intermediate allocations
+	if trimmed := firstPart.cutLeadingZeros(); len(trimmed) > 0 {
+		result = append(result, trimmed)
+	}
+	if trimmed := secondPart.cutLeadingZeros(); len(trimmed) > 0 {
+		result = append(result, trimmed)
+	}
+
 	return result
 }
